@@ -94,3 +94,14 @@ void encenderNumero(int numero){
       break;
   }
 }
+
+// Apagar el display
+void apagarDisplay(){
+  digitalWrite(A, LOW);
+  digitalWrite(B, LOW);
+  digitalWrite(C, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(E, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(G, LOW);
+}
