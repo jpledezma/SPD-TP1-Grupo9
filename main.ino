@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // C++ code
 // Juan Pablo Ledezma - Iván Laurito
 
@@ -211,3 +212,6 @@ void encenderNumero(int numero){
       break;
   }
 }
+=======
+// Intentá modificar este archivo y hacer un commit para verificar que funcione
+>>>>>>> e01ec2d200f486d3bbf711d10c67e24251bcab03
