@@ -27,16 +27,16 @@ estructura detectarPulsacion(bool estado_actual, bool estado_anterior);
 // "Setear" los pines de arduino como salida
 void setup()
 {
-  pinMode(13, OUTPUT);
-  pinMode(12, OUTPUT);
-  pinMode(11, OUTPUT);
-  pinMode(10, OUTPUT);
-  pinMode(9, OUTPUT);
-  pinMode(8, OUTPUT);
-  pinMode(7, OUTPUT);
-  pinMode(5, INPUT_PULLUP);
-  pinMode(4, INPUT_PULLUP);
-  pinMode(3, INPUT_PULLUP);
+  pinMode(A, OUTPUT);
+  pinMode(B, OUTPUT);
+  pinMode(C, OUTPUT);
+  pinMode(D, OUTPUT);
+  pinMode(E, OUTPUT);
+  pinMode(F, OUTPUT);
+  pinMode(G, OUTPUT);
+  pinMode(RESET, INPUT_PULLUP);
+  pinMode(AUMENTAR, INPUT_PULLUP);
+  pinMode(DISMINUIR, INPUT_PULLUP);
   pinMode(UNIDADES, OUTPUT);
   pinMode(DECENAS, OUTPUT);
   digitalWrite(UNIDADES, 0);
@@ -87,13 +87,13 @@ void loop()
     numero = 0;
   }
   
-mostrarNumero(numero);
+mostrarNumero(numero, 99);
 }
 
 void mostrarNumero(int num) {
   digitalWrite(UNIDADES, HIGH);
   digitalWrite(DECENAS, HIGH);
-  encenderNumero(num - (num / 10) * 10);
+  encenderNumero(num % 10);
   encenderDisplays(UNIDADES);
   digitalWrite(UNIDADES, HIGH);
   digitalWrite(DECENAS, HIGH);
@@ -216,13 +216,13 @@ estructura detectarPulsacion(bool estado_actual, bool estado_anterior){
 }
 
 // función para evitar que el contador tome valores fuera de los límites establecidos (entre 0 y 99)
-int normalizarContador(int contador){
+int normalizarContador(int contador, int limiteSuperior){
 
-  if (contador > 99){
-    contador = contador - 100;
+  if (contador > limiteSuperior){
+    contador = contador - (limiteSuperior + 1);
   }
   if (contador < 0){
-    contador = 100 + contador;
+    contador = (limiteSuperior + 1) + contador;
   }
 
   return contador;
