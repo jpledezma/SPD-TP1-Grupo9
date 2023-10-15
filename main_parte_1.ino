@@ -19,10 +19,14 @@
 
 typedef struct {
   bool ejecucion;
-  bool estado_anterior;
+  bool estadoAnterior;
 }estructura;
 
-estructura detectarPulsacion(bool estado_actual, bool estado_anterior);
+estructura detectarPulsacion(bool estadoActual, bool estadoAnterior);
+void mostrarNumero(int num);
+void encenderDisplays(int posicion);
+void encenderNumero(int numero);
+int normalizarContador(int contador, int limiteSuperior);
 
 // "Setear" los pines de arduino como salida
 void setup()
@@ -61,20 +65,20 @@ estructura deteccionReset;
 void loop()
 {
 
-  numero = normalizarContador(numero);
+  numero = normalizarContador(numero, 99);
 
   btnSumarEstadoActual = !(digitalRead(AUMENTAR));
   btnRestarrEstadoActual = !(digitalRead(DISMINUIR));
   btnResetEstadoActual = !(digitalRead(RESET));
   
   deteccionSuma = detectarPulsacion(btnSumarEstadoActual, btnSumarEstadoAnterior);
-  btnSumarEstadoAnterior = deteccionSuma.estado_anterior;
+  btnSumarEstadoAnterior = deteccionSuma.estadoAnterior;
 
   deteccionResta = detectarPulsacion(btnRestarrEstadoActual, btnRestarrEstadoAnterior);
-  btnRestarrEstadoAnterior = deteccionResta.estado_anterior;
+  btnRestarrEstadoAnterior = deteccionResta.estadoAnterior;
 
   deteccionReset = detectarPulsacion(btnResetEstadoActual, btnResetEstadoAnterior);
-  btnResetEstadoAnterior = deteccionReset.estado_anterior;
+  btnResetEstadoAnterior = deteccionReset.estadoAnterior;
 
   if (deteccionSuma.ejecucion){
     numero++;
@@ -87,7 +91,7 @@ void loop()
     numero = 0;
   }
   
-mostrarNumero(numero, 99);
+  mostrarNumero(numero);
 }
 
 void mostrarNumero(int num) {
@@ -200,13 +204,13 @@ void encenderNumero(int numero){
 }
 
 // función para ejecutar una acción por única vez en base a una entrada digital (por ejemplo, un pulsador)
-estructura detectarPulsacion(bool estado_actual, bool estado_anterior){
+estructura detectarPulsacion(bool estadoActual, bool estadoAnterior){
   estructura devolucion;
-  devolucion.estado_anterior = estado_anterior;
+  devolucion.estadoAnterior = estadoAnterior;
   
-  if (estado_actual != estado_anterior){
-    devolucion.estado_anterior = estado_actual;
-    devolucion.ejecucion = estado_actual;
+  if (estadoActual != estadoAnterior){
+    devolucion.estadoAnterior = estadoActual;
+    devolucion.ejecucion = estadoActual;
   }
   else{
     devolucion.ejecucion = false;
