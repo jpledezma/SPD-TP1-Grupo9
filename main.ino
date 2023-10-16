@@ -82,6 +82,18 @@ void mostrarNumero() {
   encenderDisplays(DECENAS);
 }
 
+int normalizarContador(int contador){
+
+  if (contador > 99){
+    contador = contador - 100;
+  }
+  if (contador < 0){
+    contador = 100 + contador;
+  }
+
+  return contador;
+}
+
 int botonPresionado() {
   botonAumentar = digitalRead(AUMENTAR);
   botonDisminuir = digitalRead(DISMINUIR);

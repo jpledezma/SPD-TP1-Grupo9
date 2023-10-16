@@ -1,6 +1,8 @@
 // UTN FRA - Sistema de Procesamiento de Datos
 // Juan Pablo Ledezma - Iván Laurito
 
+//https://www.tinkercad.com/things/f6Zv6YR02ac-parcial-domiciliario-parte-2/editel
+
 // Enlazar los pines de arduino a las entradas del display 7 segmentos
 // Definir DELAY, tiempo entre encendido de unidades y de decenas
 #define A 13

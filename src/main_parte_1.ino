@@ -1,5 +1,4 @@
-
-// Segunda versión
+// UTN FRA - Sistema de Procesamiento de Datos
 // Juan Pablo Ledezma - Iván Laurito
 
 #define A 13
@@ -26,6 +25,8 @@ typedef struct {
   bool estadoAnterior;
 }estructura;
 
+
+
 /**
  * Detectar el cambio en el estado de una entrada digital.
  *
@@ -48,15 +49,28 @@ estructura detectarPulsacion(bool estadoActual, bool estadoAnterior);
  */
 void mostrarNumero(int num);
 
+
+
 /**
- * Multiplexación.
+ * Enciende los displays usando la multiplexación:
  *
- * Se enciende un display de las unidades/decenas con un número y se apaga el otro, 
- * luego se agrega un pequeño delay.
+ * 1. Se enciende un display de las unidades/decenas con el dígito 
+ * 2. Se apaga el otro display.
+ * 3. Esto queda así durante los 10 ms. que dura el delay.
+ * 4. Se repite el proceso.
+ *
+ * Dado que los pines de salida para el display de las unidades 
+ * es el mismo que para el de las decenas, no podemos enviar 
+ * dígitos diferentes para cada display en el mismo instante. 
+ * En su lugar, lo que hacemos es mostrar uno de los dos dígitos 
+ * del número a la vez, intercalándolos tan rápido que el ojo 
+ * humano no nota este proceso.
  *
  * @param posicion es el display que será encendido.
  */
 void encenderDisplays(int posicion);
+
+
 
 /**
  * Muestra un número en un display
@@ -66,6 +80,8 @@ void encenderDisplays(int posicion);
  * @param numero Número a ser mostrado.
  */
 void encenderNumero(int numero);
+
+
 
 /**
  * Cambia un número por si se sale del límite establecido.
@@ -80,6 +96,8 @@ void encenderNumero(int numero);
  * @return Se devuelve el número ingresado con las modificaciones necesarias.
  */
 int normalizarContador(int contador, int limiteSuperior);
+
+
 
 // Establecer los pines como entradas/salidas de acuerdo a su objetivo.
 void setup()
@@ -107,10 +125,14 @@ void setup()
 // Número que será mostrado en el display.
 int numero = 0;
 
+
+
 // Variables para detectar la pulsación de los botones.
 bool btnSumarEstadoActual;
 bool btnRestarrEstadoActual;
 bool btnResetEstadoActual;
+
+
 
 /* 
  * Variables para obtener el estado anterior de los botones, y así poder
@@ -121,17 +143,21 @@ bool btnSumarEstadoAnterior = false;
 bool btnRestarrEstadoAnterior = false;
 bool btnResetEstadoAnterior = false;
 
+
+
 // Estructruras de datos para obtener el cambio de estado en un botón
 // y actualizar su estado anterior
 estructura deteccionSuma;
 estructura deteccionResta;
 estructura deteccionReset;
 
+
+
 // Loop principal.
 void loop()
 {
   // Cambiar el valor del número en caso de que esté fuera de los límites establecidos.
-  numero = normalizarContador(numero, 99);
+  numero = normalizarContador(numero, 0, 99);
 
   /* Detectar los cambios de estado de los pulsadores
    * Como en la configuración INPUT_PULLUP, el estado por defecto es HIGH, 
@@ -302,12 +328,12 @@ estructura detectarPulsacion(bool estadoActual, bool estadoAnterior){
   return devolucion;
 }
 
-int normalizarContador(int contador, int limiteSuperior){
+int normalizarContador(int contador, int limiteInferior, int limiteSuperior){
 
   if (contador > limiteSuperior){
     contador = contador - (limiteSuperior + 1);
   }
-  if (contador < 0){
+  if (contador < limiteInferior){
     contador = (limiteSuperior + 1) + contador;
   }
 
