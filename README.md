@@ -55,7 +55,7 @@ void encenderDisplays(int posicion)
 ~~~
 
 ## :robot: Link al proyecto
-- [proyecto]([https://www.tinkercad.com/things/aOYiibnDjWu](https://www.tinkercad.com/things/fl4kxIXSfHR?sharecode=D6jwre6D70nH2UNetzScZsd0BpX8h9_mCDD-rFe1n2s))
+- [Parte 1](https://www.tinkercad.com/things/fl4kxIXSfHR?sharecode=D6jwre6D70nH2UNetzScZsd0BpX8h9_mCDD-rFe1n2s)
 
 
 
