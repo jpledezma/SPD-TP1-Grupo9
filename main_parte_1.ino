@@ -2,7 +2,6 @@
 // Segunda versión
 // Juan Pablo Ledezma - Iván Laurito
 
-// Enlazar los pines de arduino a las entradas del display 7 segmentos
 #define A 13
 #define B 12
 #define C 11
@@ -17,18 +16,72 @@
 #define DECENAS A1
 #define DELAY 10
 
+// Estructura de datos
+// Como una función sólo puede devolver un valor, se creará esta estructura que contiene 2 variables, 
+// para así poder devolver ambos valores dentro de un único tipo de dato.
 typedef struct {
+  // Variable para decidir ejecutar o no una acción de acuerdo a su valor.
   bool ejecucion;
+  // Variable para guardar en memoria el estado anterior de un botón.
   bool estadoAnterior;
 }estructura;
 
+/**
+ * Detectar el cambio en el estado de una entrada digital.
+ *
+ * Esta función toma el estado actual de una entrada y la compara con su estado anterior
+ * para ejecutar una acción por única vez en base a esos datos.
+ *
+ * @param estadoActual El estado actual de la entrada (activo/no activo).
+ * @param estadoAnterior Estado inmediatamente anterior de la entrada.
+ * @return Se devuelve el estado anterior de la entrada, y la ejecución (o no) de la acción.
+ */
 estructura detectarPulsacion(bool estadoActual, bool estadoAnterior);
+
+/**
+ * Muestra un número en los displays
+ *
+ * Se muestra el número ingresado por parámetro, y es mostrado
+ * usando la función de multiplexación.
+ *
+ * @param num Número a ser mostrado.
+ */
 void mostrarNumero(int num);
+
+/**
+ * Multiplexación.
+ *
+ * Se enciende un display de las unidades/decenas con un número y se apaga el otro, 
+ * luego se agrega un pequeño delay.
+ *
+ * @param posicion es el display que será encendido.
+ */
 void encenderDisplays(int posicion);
+
+/**
+ * Muestra un número en un display
+ *
+ * Se encienden los LED del display para mostrar un número.
+ *
+ * @param numero Número a ser mostrado.
+ */
 void encenderNumero(int numero);
+
+/**
+ * Cambia un número por si se sale del límite establecido.
+ *
+ * Esta función toma un número y lo compara con el límite superior, y con cero.
+ * Si es mayor que el límite superior, se reinicia en 0.
+ * Si es menor que 0, pasa al límite superior.
+ * Si está dentro de los límites, lo deja como está.
+ *
+ * @param contador El número a ser comparado.
+ * @param limiteSuperior El valor máximo que puede tener el número.
+ * @return Se devuelve el número ingresado con las modificaciones necesarias.
+ */
 int normalizarContador(int contador, int limiteSuperior);
 
-// "Setear" los pines de arduino como salida
+// Establecer los pines como entradas/salidas de acuerdo a su objetivo.
 void setup()
 {
   pinMode(A, OUTPUT);
@@ -49,28 +102,47 @@ void setup()
   Serial.print(9600);
 }
 
+// Declaración de variables.
+
+// Número que será mostrado en el display.
 int numero = 0;
+
+// Variables para detectar la pulsación de los botones.
 bool btnSumarEstadoActual;
 bool btnRestarrEstadoActual;
 bool btnResetEstadoActual;
 
+/* 
+ * Variables para obtener el estado anterior de los botones, y así poder
+ * ejecutar una acción por única vez, de acuerdo al cambio de estado del botón.
+ * Se inicializan en false, ya que al principio del programa no estarán siendo presionados.
+ */
 bool btnSumarEstadoAnterior = false;
 bool btnRestarrEstadoAnterior = false;
 bool btnResetEstadoAnterior = false;
 
+// Estructruras de datos para obtener el cambio de estado en un botón
+// y actualizar su estado anterior
 estructura deteccionSuma;
 estructura deteccionResta;
 estructura deteccionReset;
 
+// Loop principal.
 void loop()
 {
-
+  // Cambiar el valor del número en caso de que esté fuera de los límites establecidos.
   numero = normalizarContador(numero, 99);
 
+  /* Detectar los cambios de estado de los pulsadores
+   * Como en la configuración INPUT_PULLUP, el estado por defecto es HIGH, 
+   * se niegan las estradas para hacer que el estado "no presionado" sea LOW, 
+   * y el estado "presionado" sea HIGH.
+   */
   btnSumarEstadoActual = !(digitalRead(AUMENTAR));
   btnRestarrEstadoActual = !(digitalRead(DISMINUIR));
   btnResetEstadoActual = !(digitalRead(RESET));
   
+  // Obtención del estado anterior de los botones, y la variable de ejecución de cada uno.
   deteccionSuma = detectarPulsacion(btnSumarEstadoActual, btnSumarEstadoAnterior);
   btnSumarEstadoAnterior = deteccionSuma.estadoAnterior;
 
@@ -80,13 +152,17 @@ void loop()
   deteccionReset = detectarPulsacion(btnResetEstadoActual, btnResetEstadoAnterior);
   btnResetEstadoAnterior = deteccionReset.estadoAnterior;
 
+  // Ejecutar una acción en base al estado de los botones anteriormente mencionados.
+
+  // Aumentar el contador en 1.
   if (deteccionSuma.ejecucion){
     numero++;
   }
+  // Disminuir el contador en 1.
   if (deteccionResta.ejecucion){
     numero--;
   }
-
+  // Reiniciar el contador (devolverlo a 0)
   if (deteccionReset.ejecucion){
     numero = 0;
   }
@@ -121,7 +197,6 @@ void encenderDisplays(int posicion)
   }
 }
 
-// Encender el display con el número correspondiente
 void encenderNumero(int numero){
   digitalWrite(A, LOW);
   digitalWrite(B, LOW);
@@ -203,15 +278,23 @@ void encenderNumero(int numero){
   }
 }
 
-// función para ejecutar una acción por única vez en base a una entrada digital (por ejemplo, un pulsador)
 estructura detectarPulsacion(bool estadoActual, bool estadoAnterior){
+  // Declaración de la variable principal.
   estructura devolucion;
+  // Asignación del estado anterior de la variable que será devuelta, 
+  //en base al parámetro.
   devolucion.estadoAnterior = estadoAnterior;
   
+  /* 
+   * En caso de haber un cambio en el estado, el estado anterior
+   * pasa a ser igual al estado actual.
+   * La ejecución toma el valor del estado actual de la entrada.
+   */
   if (estadoActual != estadoAnterior){
     devolucion.estadoAnterior = estadoActual;
     devolucion.ejecucion = estadoActual;
   }
+  // Si no hay un cambio en el estado, la acción no será ejecutada.
   else{
     devolucion.ejecucion = false;
   }
@@ -219,7 +302,6 @@ estructura detectarPulsacion(bool estadoActual, bool estadoAnterior){
   return devolucion;
 }
 
-// función para evitar que el contador tome valores fuera de los límites establecidos (entre 0 y 99)
 int normalizarContador(int contador, int limiteSuperior){
 
   if (contador > limiteSuperior){
