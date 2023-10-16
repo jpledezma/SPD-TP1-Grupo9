@@ -61,7 +61,7 @@ void encenderDisplays(int posicion)
 
 
 Parte 1:
-https://www.tinkercad.com/things/fl4kxIXSfHR?sharecode=D6jwre6D70nH2UNetzScZsd0BpX8h9_mCDD-rFe1n2s
+https://www.tinkercad.com/things/is7XQ8Ry0C8
 
 Parte 2:
 https://www.tinkercad.com/things/1aQAwERmj9p?sharecode=3YiPUpViMPBNio-v7o9ykhvJR1k_vOgB3yTIm4cNTZg
