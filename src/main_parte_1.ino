@@ -330,11 +330,15 @@ estructura detectarPulsacion(bool estadoActual, bool estadoAnterior){
 
 int normalizarContador(int contador, int limiteInferior, int limiteSuperior){
 
+  int diferencia;
+  
   if (contador > limiteSuperior){
-    contador = contador - (limiteSuperior + 1);
+    diferencia = contador - limiteSuperior;
+    contador = limiteInferior + diferencia - 1;
   }
   if (contador < limiteInferior){
-    contador = (limiteSuperior + 1) + contador;
+    diferencia = limiteInferior - contador;
+    contador = limiteSuperior - diferencia + 1;
   }
 
   return contador;
