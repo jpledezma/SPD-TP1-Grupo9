@@ -84,18 +84,19 @@ void encenderNumero(int numero);
 
 
 /**
- * Cambia un número por si se sale del límite establecido.
+ * Cambia un número por si se sale de los límites establecidos.
  *
- * Esta función toma un número y lo compara con el límite superior, y con cero.
- * Si es mayor que el límite superior, se reinicia en 0.
- * Si es menor que 0, pasa al límite superior.
+ * Esta función toma un número y lo compara con el límite superior, y con el límite inferior.
+ * Si es mayor que el límite superior, calcula la diferencia y se la suma al límite inferior.
+ * Si es menor que el límite inferior, calcula la diferencia y se la resta al límite superior.
  * Si está dentro de los límites, lo deja como está.
  *
  * @param contador El número a ser comparado.
+ * @param limiteInferior El valor mínimo que puede tener el número.
  * @param limiteSuperior El valor máximo que puede tener el número.
  * @return Se devuelve el número ingresado con las modificaciones necesarias.
  */
-int normalizarContador(int contador, int limiteSuperior);
+int normalizarContador(int contador, int limiteInferior, int limiteSuperior);
 
 
 
@@ -334,10 +335,12 @@ int normalizarContador(int contador, int limiteInferior, int limiteSuperior){
   
   if (contador > limiteSuperior){
     diferencia = contador - limiteSuperior;
+    // El -1 es necesario para que también se tenga en cuenta al número del límite inferior
     contador = limiteInferior + diferencia - 1;
   }
   if (contador < limiteInferior){
     diferencia = limiteInferior - contador;
+    // El +1 es necesario para que también se tenga en cuenta al número del límite superior
     contador = limiteSuperior - diferencia + 1;
   }
 
