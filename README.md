@@ -5,18 +5,20 @@
 - Iván Laurito
 - Juan Pablo Ledezma
 
+# Doble display de 7 segmentos
 
 ## Parte 1: Contador.
 ![Tinkercad](./img/diseño-parte-1.png)
 
-## Descripción
+### Descripción
 Este circuito controla 2 displays de 7 segmentos para mostrar un número. El mismo está inicializado en 0, y se puede aumentar o disminuir su valor en 1, o resetearlo a 0; pulsando el botón correspondiente.
 
 Para mostrar controlar los 2 display con una única salida, se utiliza la técnica de la multiplexación, la cual consiste en encender un display por un instante, luego apagarlo y encerder el otro, repitiendo este proceso varias veces por segundo. De esta manera se logra engañar al ojo humano, el cuál percibe que ambos displays están encendidos al mismo tiempo.
 
 La configuración de los displays es cátodo común.
 
-## Funciones principales
+
+### Funciones principales
 Estas son las funciones que se encargan de la multiplexación.
 
 UNIDADES es un #define del pin de salida que está conectado al cátodo del display derecho (el que muestra las unidades), mientras que DECENAS es el pin conectado al cátodo del display izquierdo (que muestra las decenas).
@@ -54,8 +56,44 @@ void encenderDisplays(int posicion)
 }
 ~~~
 
+
+## Parte 2: Implementación de números primos.
+![Tinkercad](./img/diseño-parte-2.png)
+
+### Descripción
+Al circuito de la parte 1 se le agrega un switch deslizante, el cual sirve para cambiar el funcionamiento del contador.
+Si el switch está en estado HIGH, funciona como un contador lineal, que cambia su valor en 1 por cada pulsación.
+Si está en estado LOW, el contador calcula el próximo número primo, en caso que se presione el botón "aumentar"; o el anterior número primo, en caso que se presione el botón "disminuir".
+
+### Función principal
+La función toma como argumento un número entero, y devuelve `true` si el número es primo, o `false` si el número NO es primo.
+
+~~~ C
+bool esPrimo(int numero) {
+  // No existen números primos menores a 2.
+  if (numero < 2) {
+    return false;
+  }
+  /*
+   * Se buscan divisores del número, entre 2 (el número primo más pequeño), 
+   * y la mitad del número (los números superiores a su mitad no pueden ser divisores).
+   * Si encuentra un divisor, se devuelve false.
+   */
+  for (int i = 2; i <= (numero / 2); i++) {
+    if (numero % i == 0) {
+    return false;
+    }
+}
+  return true;
+}
+~~~
+
+
+## Parte 2-2: Implementación de sensor de temperatura y motor cc.
+
 ## :robot: Link al proyecto
 - [Parte 1](https://www.tinkercad.com/things/fl4kxIXSfHR?sharecode=D6jwre6D70nH2UNetzScZsd0BpX8h9_mCDD-rFe1n2s)
+- [Parte 2](https://www.tinkercad.com/things/1aQAwERmj9p?sharecode=3YiPUpViMPBNio-v7o9ykhvJR1k_vOgB3yTIm4cNTZg)
 
 
 
