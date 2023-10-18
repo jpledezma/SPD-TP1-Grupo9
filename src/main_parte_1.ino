@@ -117,7 +117,7 @@ void setup()
   digitalWrite(UNIDADES, 0);
   digitalWrite(DECENAS, 0);
   encenderNumero(0);
-  Serial.print(9600);
+  Serial.begin(9600);
 }
 
 // Declaración de variables.
