@@ -84,19 +84,18 @@ void encenderNumero(int numero);
 
 
 /**
- * Cambia un número por si se sale de los límites establecidos.
+ * Cambia un número por si se sale del límite establecido.
  *
- * Esta función toma un número y lo compara con el límite superior, y con el límite inferior.
- * Si es mayor que el límite superior, calcula la diferencia y se la suma al límite inferior.
- * Si es menor que el límite inferior, calcula la diferencia y se la resta al límite superior.
+ * Esta función toma un número y lo compara con el límite superior, y con cero.
+ * Si es mayor que el límite superior, se reinicia en 0.
+ * Si es menor que 0, pasa al límite superior.
  * Si está dentro de los límites, lo deja como está.
  *
  * @param contador El número a ser comparado.
- * @param limiteInferior El valor mínimo que puede tener el número.
  * @param limiteSuperior El valor máximo que puede tener el número.
  * @return Se devuelve el número ingresado con las modificaciones necesarias.
  */
-int normalizarContador(int contador, int limiteInferior, int limiteSuperior);
+int normalizarContador(int contador, int limiteSuperior);
 
 
 
@@ -118,7 +117,7 @@ void setup()
   digitalWrite(UNIDADES, 0);
   digitalWrite(DECENAS, 0);
   encenderNumero(0);
-  Serial.begin(9600);
+  Serial.print(9600);
 }
 
 // Declaración de variables.
@@ -130,7 +129,7 @@ int numero = 0;
 
 // Variables para detectar la pulsación de los botones.
 bool btnSumarEstadoActual;
-bool btnRestarrEstadoActual;
+bool btnRestarEstadoActual;
 bool btnResetEstadoActual;
 
 
@@ -141,7 +140,7 @@ bool btnResetEstadoActual;
  * Se inicializan en false, ya que al principio del programa no estarán siendo presionados.
  */
 bool btnSumarEstadoAnterior = false;
-bool btnRestarrEstadoAnterior = false;
+bool btnRestarEstadoAnterior = false;
 bool btnResetEstadoAnterior = false;
 
 
@@ -166,15 +165,15 @@ void loop()
    * y el estado "presionado" sea HIGH.
    */
   btnSumarEstadoActual = !(digitalRead(AUMENTAR));
-  btnRestarrEstadoActual = !(digitalRead(DISMINUIR));
+  btnRestarEstadoActual = !(digitalRead(DISMINUIR));
   btnResetEstadoActual = !(digitalRead(RESET));
   
-  // Obtención del estado anterior de los botones, y la variable de ejecución de cada uno.
+  // Obtención del estado anterior de los botones y la variable de ejecución de cada uno.
   deteccionSuma = detectarPulsacion(btnSumarEstadoActual, btnSumarEstadoAnterior);
   btnSumarEstadoAnterior = deteccionSuma.estadoAnterior;
 
-  deteccionResta = detectarPulsacion(btnRestarrEstadoActual, btnRestarrEstadoAnterior);
-  btnRestarrEstadoAnterior = deteccionResta.estadoAnterior;
+  deteccionResta = detectarPulsacion(btnRestarEstadoActual, btnRestarEstadoAnterior);
+  btnRestarEstadoAnterior = deteccionResta.estadoAnterior;
 
   deteccionReset = detectarPulsacion(btnResetEstadoActual, btnResetEstadoAnterior);
   btnResetEstadoAnterior = deteccionReset.estadoAnterior;
