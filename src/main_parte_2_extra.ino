@@ -1,3 +1,5 @@
+
+// Segunda versión
 // Juan Pablo Ledezma - Iván Laurito
 
 // Enlazar los pines de arduino a las entradas del display 7 segmentos
@@ -8,6 +10,7 @@
 #define E 9
 #define F 8
 #define G 7
+#define MOTOR 6
 #define RESET 5
 #define AUMENTAR 4
 #define DISMINUIR 3
@@ -16,83 +19,20 @@
 #define DECENAS A1
 #define DELAY 10
 
-// Estructura de datos
-// Como una función sólo puede devolver un valor, se creará esta estructura que contiene 2 variables, 
-// para así poder devolver ambos valores dentro de un único tipo de dato.
 typedef struct {
-  // Variable para decidir ejecutar o no una acción de acuerdo a su valor.
   bool ejecucion;
-  // Variable para guardar en memoria el estado anterior de un botón.
   bool estadoAnterior;
 }estructura;
 
-/**
- * Detectar el cambio en el estado de una entrada digital.
- *
- * Esta función toma el estado actual de una entrada y la compara con su estado anterior
- * para ejecutar una acción por única vez en base a esos datos.
- *
- * @param estadoActual El estado actual de la entrada (activo/no activo).
- * @param estadoAnterior Estado inmediatamente anterior de la entrada.
- * @return Se devuelve el estado anterior de la entrada, y la ejecución (o no) de la acción.
- */
+// Prototipos de las funciones
 estructura detectarPulsacion(bool estadoActual, bool estadoAnterior);
-
-/**
- * Muestra un número en los displays
- *
- * Se muestra el número ingresado por parámetro, y es mostrado
- * usando la función de multiplexación.
- *
- * @param num Número a ser mostrado.
- */
 void mostrarNumero(int num);
-
-/**
- * Multiplexación.
- *
- * Se enciende un display de las unidades/decenas con un número y se apaga el otro, 
- * luego se agrega un pequeño delay.
- *
- * @param posicion es el display que será encendido.
- */
 void encenderDisplays(int posicion);
-
-/**
- * Muestra un número en un display
- *
- * Se encienden los LED del display para mostrar un número.
- *
- * @param numero Número a ser mostrado.
- */
 void encenderNumero(int numero);
-
-/**
- * Cambia un número por si se sale de los límites establecidos.
- *
- * Esta función toma un número y lo compara con el límite superior, y con el límite inferior.
- * Si es mayor que el límite superior, calcula la diferencia y se la suma al límite inferior.
- * Si es menor que el límite inferior, calcula la diferencia y se la resta al límite superior.
- * Si está dentro de los límites, lo deja como está.
- *
- * @param contador El número a ser comparado.
- * @param limiteInferior El valor mínimo que puede tener el número.
- * @param limiteSuperior El valor máximo que puede tener el número.
- * @return Se devuelve el número ingresado con las modificaciones necesarias.
- */
 int normalizarContador(int contador, int limiteInferior, int limiteSuperior);
-
-/**
- * Comprueba si un número es primo.
- *
- * Esta función toma un número y busca sus divisores (sin contar a 1 y a sí mismo), 
- * si encuentra uno, devuelve un false. Si no encuentra ninguno, devuelve true.
- *
- * @param numero El número que será comprobado.
- * @return Se devuelve un true o false, dependiendo de si el número es primo o no.
- */
 bool esPrimo(int numero);
 
+// "Setear" los pines de arduino como salida
 void setup()
 {
   pinMode(A, OUTPUT);
@@ -102,6 +42,7 @@ void setup()
   pinMode(E, OUTPUT);
   pinMode(F, OUTPUT);
   pinMode(G, OUTPUT);
+  pinMode(MOTOR, OUTPUT);
   pinMode(RESET, INPUT_PULLUP);
   pinMode(AUMENTAR, INPUT_PULLUP);
   pinMode(DISMINUIR, INPUT_PULLUP);
@@ -114,38 +55,30 @@ void setup()
   Serial.begin(9600);
 }
 
-// Número que será mostrado en el display.
 int numero;
-// Contador de números primos.
 int numeroPrimo = 2;
-// Contador de números naturales.
 int numeroContador = 0;
+int velocidadMotor = 0;
 
-// Variables para detectar la pulsación de los botones.
 bool btnSumarEstadoActual;
 bool btnRestarrEstadoActual;
 bool btnResetEstadoActual;
 
-/* 
- * Variables para obtener el estado anterior de los botones, y así poder
- * ejecutar una acción por única vez, de acuerdo al cambio de estado del botón.
- * Se inicializan en false, ya que al principio del programa no estarán siendo presionados.
- */
 bool btnSumarEstadoAnterior = false;
 bool btnRestarrEstadoAnterior = false;
 bool btnResetEstadoAnterior = false;
-
-// Posición del interruptor deslizante.
 bool estadoSwitch;
 
-// Estructruras de datos para obtener el cambio de estado en un botón
-// y actualizar su estado anterior
 estructura deteccionSuma;
 estructura deteccionResta;
 estructura deteccionReset;
 
 void loop()
 {
+  
+  if (velocidadMotor > 255){
+    velocidadMotor = 255;
+  }
 
   btnSumarEstadoActual = !(digitalRead(AUMENTAR));
   btnRestarrEstadoActual = !(digitalRead(DISMINUIR));
@@ -164,12 +97,19 @@ void loop()
   if (estadoSwitch == LOW){
     if (deteccionSuma.ejecucion){
     numeroContador++;
+      /*if (velocidadMotor < 255 && numeroContador <= 5){
+        velocidadMotor += 51;
+      }*/
     }
     if (deteccionResta.ejecucion){
     numeroContador--;
+      /*if (velocidadMotor > 0 && numeroContador < 5){
+        velocidadMotor -= 51;
+      }*/
     }
     if (deteccionReset.ejecucion){
     numeroContador = 0;
+    //velocidadMotor = 0;
     }
     numeroContador = normalizarContador(numeroContador,0, 99);
     numero = numeroContador;
@@ -183,7 +123,7 @@ void loop()
             break;
         }
         numeroPrimo++;
-        Serial.println(numeroPrimo);
+        //Serial.println(numeroPrimo);
       }
     }
     if (deteccionResta.ejecucion){
@@ -201,8 +141,34 @@ void loop()
     }
     numero = numeroPrimo;  
   }
-  Serial.println(numero);
+
+  // Controlar la velocidad del motor, dependiendo del valor del contador lineal (el que va de 1 en 1).
+  // El motor tiene 5 velocidades. Si el número del contador es mayor o igual a 5, el motor toma la velocidad máxima establecida.
+  // Si el número es 0, el motor no se mueve.
+  switch (numeroContador){
+    case 0:
+    velocidadMotor = 0;
+    break;
+    case 1:
+    velocidadMotor = 51;
+    break;
+    case 2:
+    velocidadMotor = 102;
+    break;
+    case 3:
+    velocidadMotor = 153;
+    break;
+    case 4:
+    velocidadMotor = 204;
+    break;
+    default:
+    velocidadMotor = 255;
+    break;
+  }
+
+  Serial.println(velocidadMotor);
   mostrarNumero(numero);
+  analogWrite(MOTOR, velocidadMotor);
 }
 
 void mostrarNumero(int num) {
@@ -314,23 +280,15 @@ void encenderNumero(int numero){
   }
 }
 
+// función para ejecutar una acción por única vez en base a una entrada digital (por ejemplo, un pulsador)
 estructura detectarPulsacion(bool estadoActual, bool estadoAnterior){
-  // Declaración de la variable principal.
   estructura devolucion;
-  // Asignación del estado anterior de la variable que será devuelta, 
-  //en base al parámetro.
   devolucion.estadoAnterior = estadoAnterior;
   
-  /* 
-   * En caso de haber un cambio en el estado, el estado anterior
-   * pasa a ser igual al estado actual.
-   * La ejecución toma el valor del estado actual de la entrada.
-   */
   if (estadoActual != estadoAnterior){
     devolucion.estadoAnterior = estadoActual;
     devolucion.ejecucion = estadoActual;
   }
-  // Si no hay un cambio en el estado, la acción no será ejecutada.
   else{
     devolucion.ejecucion = false;
   }
@@ -338,18 +296,17 @@ estructura detectarPulsacion(bool estadoActual, bool estadoAnterior){
   return devolucion;
 }
 
+// función para evitar que el contador tome valores fuera de los límites establecidos (entre 0 y 99)
 int normalizarContador(int contador, int limiteInferior, int limiteSuperior){
 
   int diferencia;
   
   if (contador > limiteSuperior){
     diferencia = contador - limiteSuperior;
-    // El -1 es necesario para que también se tenga en cuenta al número del límite inferior
     contador = limiteInferior + diferencia - 1;
   }
   if (contador < limiteInferior){
     diferencia = limiteInferior - contador;
-    // El +1 es necesario para que también se tenga en cuenta al número del límite superior
     contador = limiteSuperior - diferencia + 1;
   }
 
@@ -357,15 +314,9 @@ int normalizarContador(int contador, int limiteInferior, int limiteSuperior){
 }
 
 bool esPrimo(int numero) {
-  // No existen números primos menores a 2.
   if (numero < 2) {
     return false;
   }
-  /*
-   * Se buscan divisores del número, entre 2 (el número primo más pequeño), 
-   * y la mitad del número (los números superiores a su mitad no pueden ser divisores).
-   * Si encuentra un divisor, se devuelve false.
-   */
   for (int i = 2; i <= (numero / 2); i++) {
     if (numero % i == 0) {
     return false;
