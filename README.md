@@ -61,9 +61,19 @@ void encenderDisplays(int posicion)
 ![Tinkercad](./img/diseño-parte-2.png)
 
 ### Descripción
-Al circuito de la parte 1 se le agrega un switch deslizante, el cual sirve para cambiar el funcionamiento del contador.
-Si el switch está en estado HIGH, funciona como un contador lineal, que cambia su valor en 1 por cada pulsación.
-Si está en estado LOW, el contador calcula el próximo número primo, en caso que se presione el botón "aumentar"; o el anterior número primo, en caso que se presione el botón "disminuir".
+Este circuito consta de 2 displays que que muestran el número ingresado por el usuario mediante los componentes. Presenta
+dos modos de ingreso del valor númerico: por medio de los botones y acorde al valor devuelto por el sensor de temperatura
+que oscila entre los -40ºC y los 125ºC.
+
+Si el interruptor del switch de ingreso se encuentra hacia su izquierda, se hallará en modo Botones. Este modo permite
+usar los botones para aumentar, disminuir y resetar el contador del número mostrado en los displays al mínimo. En este
+modo, si el switch está en estado HIGH, funciona como un contador lineal, que cambia su valor en 1 por cada pulsación.
+Si está en estado LOW, el contador calcula el próximo número primo, en caso que se presione el botón "Aumentar"; o el anterior número primo, en caso que se presione el botón "Disminuir".
+
+Si el interruptor del switch de ingreso se encuentra hacia su derecha, se hallará en modo Sensor. Este modo devolverá el
+número de 0 a 99 a mostrarse en los displays según el valor obtenido del sensor de temperatura. Además, en este modo se
+activará el motor en una frecuencia equivalente al valor del sensor de temperatura, siendo su valor mínimo equivalente a 0 rpm y su valor máximo equivaente a 2941 rpm.
+
 
 ### Función principal
 La función toma como argumento un número entero, y devuelve `true` si el número es primo, o `false` si el número NO es primo.
@@ -88,21 +98,6 @@ bool esPrimo(int numero) {
 }
 ~~~
 
-
-## Parte 2-2: Implementación de sensor de temperatura y motor cc.
-
 ## :robot: Link al proyecto
-- [Parte 1](https://www.tinkercad.com/things/fl4kxIXSfHR?sharecode=D6jwre6D70nH2UNetzScZsd0BpX8h9_mCDD-rFe1n2s)
-- [Parte 2](https://www.tinkercad.com/things/1aQAwERmj9p?sharecode=3YiPUpViMPBNio-v7o9ykhvJR1k_vOgB3yTIm4cNTZg)
-
-
-
-
-Parte 1:
-https://www.tinkercad.com/things/is7XQ8Ry0C8
-
-Parte 2:
-https://www.tinkercad.com/things/1aQAwERmj9p?sharecode=3YiPUpViMPBNio-v7o9ykhvJR1k_vOgB3yTIm4cNTZg
-
-Parte 2 extra:
-https://www.tinkercad.com/things/bn6g4Ktsmt9?sharecode=ubQUxI4qOm5N6BF7Jnl_ViYGAhYAr86qibA8njI7pQE
+- [Parte 1](https://www.tinkercad.com/things/is7XQ8Ry0C8)
+- [Parte 2](https://www.tinkercad.com/things/bnREgVTIRfq)

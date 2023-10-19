@@ -153,3 +153,15 @@ int normalizarContador2(int contador, int limite_superior){
 
   return contador;
 }
+// Función para determinar si un número es primo
+bool esPrimo(int numero) {
+  if (numero < 2) {
+    return false;
+  }
+  for (int i = 2; i <= (numero / 2); i++) {
+    if (numero % i == 0) {
+    return false;
+    }
+}
+  return true;
+}
