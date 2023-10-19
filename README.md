@@ -98,15 +98,6 @@ bool esPrimo(int numero) {
 }
 ~~~
 
-
-## Parte 3: Implementación de números primos.
-![Tinkercad](./img/diseño-parte-3.png)
-
-### Descripción
-Este circuito muestra en los displays un valor entre 0 y 99 y varía la frecuencia del motor según la intensidad de la luz y de la temperatura del ambiente según sus correspondientes sensores. Cuando ambos sensores devuelven un valor nulo, el número mostrado es 0 y el motor estará desactivado. Cuando el sensor de luz o el de temperatura devuelvan su valor máximo, el número será 50 o 49 respectivamente y el motor tendrá una frecuencia de ~1400 rpm. Si ambos sensores devuelven su valor máximo, el display mostrará el 99 y el motor estará en una frecuencia de 2941 rpm. Se podrá alcanzar valores intermedios según la variación de la suma de ambas intensidades de los sensores.
-
-
 ## :robot: Link al proyecto
 - [Parte 1](https://www.tinkercad.com/things/is7XQ8Ry0C8)
 - [Parte 2](https://www.tinkercad.com/things/bnREgVTIRfq)
-- [Parte 3](https://www.tinkercad.com/things/lMvYbrMYxDQ)
