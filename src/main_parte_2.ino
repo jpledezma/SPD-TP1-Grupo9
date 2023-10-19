@@ -64,7 +64,7 @@ void encenderNumero(int numero);
 
 
 
-int normalizarContador(int contador, int limiteSuperior);
+int normalizarContador(int contador, int limiteInferior, int limiteSuperior);
 
 
 
@@ -176,7 +176,7 @@ void loop()
       if (deteccionReset.ejecucion){
       numeroContador = 0;
       }
-      numeroContador = normalizarContador(numeroContador, 99);
+      numeroContador = normalizarContador(numeroContador, 0, 99);
       numero = numeroContador;
     }
     else{
@@ -231,7 +231,7 @@ void loop()
   Serial.println(numero);
   mostrarNumero(numero);
   
-}
+} 
 
 void mostrarNumero(int num) {
   digitalWrite(UNIDADES, HIGH);
@@ -363,13 +363,17 @@ estructura detectarPulsacion(bool estadoActual, bool estadoAnterior){
 
 
 
-int normalizarContador(int contador, int limiteSuperior){
+int normalizarContador(int contador, int limiteInferior, int limiteSuperior){
 
+  int diferencia;
+  
   if (contador > limiteSuperior){
-    contador = contador - (limiteSuperior + 1);
+    diferencia = contador - limiteSuperior;
+    contador = limiteInferior + diferencia - 1;
   }
-  if (contador < 0){
-    contador = (limiteSuperior + 1) + contador;
+  if (contador < limiteInferior){
+    diferencia = limiteInferior - contador;
+    contador = limiteSuperior - diferencia + 1;
   }
 
   return contador;

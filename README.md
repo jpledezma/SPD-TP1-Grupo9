@@ -93,7 +93,7 @@ bool esPrimo(int numero) {
     if (numero % i == 0) {
     return false;
     }
-}
+  }
   return true;
 }
 ~~~
